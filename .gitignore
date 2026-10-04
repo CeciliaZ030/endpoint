@@ -29,3 +29,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Generated CSV exports (scripts/export-csv.mjs) — regenerate, do not commit.
+/exports/
