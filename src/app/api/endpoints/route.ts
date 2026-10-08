@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { apiJson, OPTIONS } from "@/lib/api";
+import { apiJson, OPTIONS, scopeMeta } from "@/lib/api";
 import { filterEndpoints } from "@/lib/query";
 import { getCatalog } from "@/lib/data";
 
@@ -22,6 +22,7 @@ export function GET(req: NextRequest) {
     filters: Object.fromEntries(
       Object.entries(filters).filter(([, v]) => v != null),
     ),
+    ...scopeMeta(),
     endpoints,
   });
 }

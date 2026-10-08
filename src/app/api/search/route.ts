@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { apiJson, apiError, OPTIONS } from "@/lib/api";
+import { apiJson, apiError, OPTIONS, scopeMeta } from "@/lib/api";
 import { filterEndpoints, searchEndpoints } from "@/lib/query";
 
 export { OPTIONS };
@@ -19,5 +19,10 @@ export function GET(req: NextRequest) {
   });
   const endpoints = searchEndpoints(q, base);
 
-  return apiJson({ query: q, count: endpoints.length, endpoints });
+  return apiJson({
+    query: q,
+    count: endpoints.length,
+    ...scopeMeta(),
+    endpoints,
+  });
 }
