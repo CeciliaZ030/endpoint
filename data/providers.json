@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-11T12:54:07.839Z",
+  "generated_at": "2026-10-12T15:25:54.820Z",
   "status": "ok",
   "source": "data/endpoints_full.json.gz",
-  "scanned": 141701,
+  "scanned": 144316,
   "subset": false,
   "firstParty": [
     {
@@ -260,6 +260,24 @@
       "brand": null
     },
     {
+      "host": "app.earnfi.fun",
+      "name": "EarnFi – Hire Humans or AI Agents and Earn | Micro Tasks, Jobs, Campaigns, Contests",
+      "count": 79,
+      "priced": 19,
+      "priceMedian": 1,
+      "topCategory": "compute",
+      "networks": [
+        "Solana"
+      ],
+      "sources": [
+        "pay-sh",
+        "x402scan"
+      ],
+      "sampleId": "79f7e73deb4858c9",
+      "url": "https://app.earnfi.fun/api/ai-agent/v1/work/reviews/mine",
+      "brand": null
+    },
+    {
       "host": "glim.sh",
       "name": "glim.sh - give your AI agent live data from across the web",
       "count": 35,
@@ -388,24 +406,6 @@
       ],
       "sampleId": "846b7a758ffdc302",
       "url": "https://travel.brij.fi",
-      "brand": null
-    },
-    {
-      "host": "app.earnfi.fun",
-      "name": "EARNFI &#8211; Hire Humans or AI Agents and Earn | Micro Tasks, Jobs, Campaigns, Contests, Community campaigns",
-      "count": 6,
-      "priced": 5,
-      "priceMedian": 0.55,
-      "topCategory": "compute",
-      "networks": [
-        "Solana"
-      ],
-      "sources": [
-        "pay-sh",
-        "x402scan"
-      ],
-      "sampleId": "09446df7dd8da28d",
-      "url": "https://app.earnfi.fun/api/ai-agent/v1/interrupt",
       "brand": null
     },
     {
