@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-14T11:56:12.001Z",
+  "generated_at": "2026-10-15T11:34:05.495Z",
   "status": "ok",
   "source": "data/endpoints_full.json.gz",
-  "scanned": 149500,
+  "scanned": 152462,
   "subset": false,
   "firstParty": [
     {
@@ -154,6 +154,25 @@
       "brand": "0x"
     },
     {
+      "host": "agi.apify.com",
+      "name": "Apify",
+      "count": 2,
+      "priced": 1,
+      "priceMedian": 1,
+      "topCategory": "data",
+      "networks": [
+        "Base",
+        "Solana"
+      ],
+      "sources": [
+        "pay-sh",
+        "x402scan"
+      ],
+      "sampleId": "d5067e9765ade5a6",
+      "url": "https://agi.apify.com",
+      "brand": "Apify"
+    },
+    {
       "host": "api.firecrawl.dev",
       "name": "Firecrawl - The Web Data API for AI",
       "count": 2,
@@ -169,23 +188,6 @@
       "sampleId": "27803e053cccfbab",
       "url": "https://api.firecrawl.dev/v2/x402/search",
       "brand": "Firecrawl"
-    },
-    {
-      "host": "agi.apify.com",
-      "name": "Apify Agent General Interface (AGI)",
-      "count": 1,
-      "priced": 1,
-      "priceMedian": 1,
-      "topCategory": "messaging",
-      "networks": [
-        "Base"
-      ],
-      "sources": [
-        "x402scan"
-      ],
-      "sampleId": "77c0780e9695cdf1",
-      "url": "https://agi.apify.com/protocols/x402/prepaid-tokens",
-      "brand": "Apify"
     },
     {
       "host": "app.dynamicauth.com",
