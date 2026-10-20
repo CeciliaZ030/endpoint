@@ -17,36 +17,48 @@ import {
   getNetworks,
   getProtocols,
   getSourceCounts,
-  getTotalEndpoints,
 } from "@/lib/data";
+import { liveTotals } from "@/lib/live-catalog";
 
-// Rebuild at most once per day; the daily fetch job pushes fresh data.
-export const revalidate = 86400;
+// Regenerate hourly. The headline figures come from a per-request fetch of
+// the committed snapshot (@/lib/live-catalog), so a short window is what lets
+// the daily commit reach the page without a deployment — which is the whole
+// point: between 2026-10-07 and 2026-10-19 none was promoted and the hero sat
+// at 131,675 while the catalog reached 161,826.
+export const revalidate = 3600;
 
 // Swap this to change the hero background (autoplaying, looping, muted).
 const HERO_VIDEO =
   "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260517_222138_3e3205be-3364-417b-a64a-bfe087acbec4.mp4";
 
-export default function HomePage() {
-  const { endpoints, generated_at } = getCatalog();
-  // The catalog's real size. `endpoints` is the capped subset the page
-  // bundles, so its length is the browsable count, not the total.
-  const totalEndpoints = getTotalEndpoints();
+export default async function HomePage() {
+  const { endpoints } = getCatalog();
+  // The catalog's real size, read from the repository rather than from this
+  // build. `endpoints` is the capped subset the page bundles, so its length is
+  // the browsable count, not the total.
+  const live = await liveTotals();
+  const totalEndpoints = live.total;
   const bundled = getBundledCount();
   const networks = getNetworks();
   const protocols = getProtocols();
   const categoryCounts = getCategoryCounts();
   const sourceCounts = getSourceCounts();
 
-  const updated = new Date(generated_at);
+  const updated = new Date(live.date ?? live.generatedAt);
   const updatedLabel = isNaN(updated.getTime())
     ? "—"
     : updated.toISOString().slice(0, 10);
 
-  const nonEmptyCategories = Object.values(categoryCounts).filter(
-    (c) => c > 0,
-  ).length;
-  const directoriesCount = Object.keys(sourceCounts).length;
+  // Prefer the snapshot's breakdowns (full catalog) over the bundled subset's.
+  const snap = live.snapshot;
+  const countNonZero = (o: Record<string, number> | undefined) =>
+    o ? Object.values(o).filter((n) => n > 0).length : null;
+  const nonEmptyCategories =
+    countNonZero(snap?.byCategory) ??
+    Object.values(categoryCounts).filter((c) => c > 0).length;
+  const networkCount = countNonZero(snap?.byChain) ?? networks.length;
+  const directoriesCount =
+    countNonZero(snap?.bySource) ?? Object.keys(sourceCounts).length;
 
   const heroStats = [
     { value: totalEndpoints, label: "ENDPOINTS\nINDEXED", plus: true },
@@ -82,7 +94,7 @@ export default function HomePage() {
               <StatsBar
                 total={totalEndpoints}
                 browsable={bundled}
-                networks={networks.length}
+                networks={networkCount}
                 categories={nonEmptyCategories}
                 directories={directoriesCount}
                 updated={updatedLabel}

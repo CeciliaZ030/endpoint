@@ -57,17 +57,22 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # The site bakes data/endpoints.json in at build time, so the front only
-      # updates on a fresh deploy. Force a Vercel production rebuild when data
-      # changed. No-ops unless the VERCEL_DEPLOY_HOOK secret is set, so Git
-      # auto-deploy remains the path if you prefer it.
+      # EVERYTHING the public API serves is frozen at build time: the catalog
+      # is an `import` of data/endpoints.json, and data/stats/*.json ships as
+      # traced files inside the serverless function, whose filesystem is
+      # immutable. `export const dynamic = "force-dynamic"` stops the RESPONSE
+      # being cached; it does not re-read either from disk. So a commit here
+      # changes nothing the public sees until a new deployment is promoted.
       - name: Trigger Vercel deploy
         if: steps.commit.outputs.changed == 'true'
         env:
           VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
         run: |
           if [ -z "$VERCEL_DEPLOY_HOOK" ]; then
-            echo "VERCEL_DEPLOY_HOOK not set — relying on Vercel Git auto-deploy."
+            echo "::warning::VERCEL_DEPLOY_HOOK is not set, so this job cannot \
+          start a deploy. It is relying on Vercel's Git integration to build \
+          the commit just pushed. If production does not move, that is where \
+          to look — the verify step below is what catches it."
             exit 0
           fi
           echo "Triggering Vercel deploy hook…"
@@ -77,6 +82,56 @@ jobs:
             echo "::error::Vercel deploy hook failed (HTTP $code)."
             exit 1
           fi
+
+      # Between 2026-09-30 and 2026-10-07 the catalog grew 118,470 -> 131,675
+      # and every one of those runs passed, because a green run only ever
+      # proved the COMMIT landed. Nothing checked the thing users actually
+      # read. Ask production for its own number and compare.
+      #
+      # A deploy takes minutes, so poll rather than check once. Set
+      # PUBLIC_SITE_URL as a repository variable to point this elsewhere.
+      - name: Verify production serves the new catalog
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          SITE: ${{ vars.PUBLIC_SITE_URL || 'https://x402endpoint.com' }}
+        run: |
+          expected=$(node -e 'process.stdout.write(String(require("./data/endpoints.json").full_count))')
+          echo "Committed full_count: $expected"
+          echo "Polling $SITE/api/stats for up to 15 minutes…"
+          served=""
+          for i in $(seq 1 30); do
+            body=$(curl -fsS -m 30 "$SITE/api/stats" 2>/dev/null || true)
+            if [ -n "$body" ]; then
+              served=$(printf '%s' "$body" | node -e '
+                let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{
+                  try { process.stdout.write(String(JSON.parse(s).total)); }
+                  catch { process.stdout.write(""); }
+                });' || true)
+              echo "  attempt $i: total=${served:-<unparseable>}"
+              [ "$served" = "$expected" ] && break
+            else
+              echo "  attempt $i: no response"
+            fi
+            sleep 30
+          done
+          {
+            echo "### Production check"
+            echo
+            echo "| | value |"
+            echo "| --- | --- |"
+            echo "| site | \`$SITE\` |"
+            echo "| committed \`full_count\` | $expected |"
+            echo "| served \`total\` | ${served:-(none)} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$served" != "$expected" ]; then
+            echo "::error::Production still serves total=${served:-<none>} but \
+          the committed catalog holds $expected. The data is correct in git and \
+          stale on the site, so the gap is the deployment, not the fetch. Check \
+          which deployment $SITE is aliased to, and set VERCEL_DEPLOY_HOOK if \
+          Vercel's Git integration is not building these commits."
+            exit 1
+          fi
+          echo "Production serves $served — matches the commit."
 
       - name: Report failure
         if: failure()
