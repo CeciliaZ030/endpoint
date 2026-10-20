@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getBundledCount, getTotalEndpoints, isBundledSubset } from "./data";
+import { getBundledCount } from "./data";
+import { liveTotals } from "./live-catalog";
 
 // The catalog only changes on redeploy (data is bundled at build time), so API
 // responses are safe to cache hard at the edge for a day with SWR.
@@ -37,10 +38,12 @@ export function OPTIONS() {
 //
 // Every subset-scoped response carries this, so a caller can tell coverage
 // from absence without reading our source.
-export function scopeMeta() {
+export async function scopeMeta() {
   const browsable = getBundledCount();
-  const total = getTotalEndpoints();
-  if (!isBundledSubset()) {
+  // The live total, so a stale deployment does not understate the gap it is
+  // reporting — the whole point of this field is to be trustworthy.
+  const total = (await liveTotals()).total;
+  if (browsable >= total) {
     return { scope: "full" as const, browsable, catalog_total: total };
   }
   return {

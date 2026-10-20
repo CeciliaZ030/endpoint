@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getRank } from "@/lib/rank";
 import { getHosts, hostStats } from "@/lib/hosts";
-import { latestSnapshot } from "@/lib/stats-history";
+import { liveTotals, liveProviders } from "@/lib/live-catalog";
 import { getCatalog } from "@/lib/data";
 import {
   formatProviderPrice,
@@ -85,8 +85,8 @@ function ProviderTable({
   );
 }
 
-export function NamedProvidersSection() {
-  const p = getProviders();
+export async function NamedProvidersSection() {
+  const p = await liveProviders();
   const firstParty = p.firstParty;
   const selfHosted = p.selfHosted;
   const brands = new Set(firstParty.map((r) => r.brand)).size;
@@ -269,11 +269,12 @@ function Stat({ label, value }: { label: string; value: string | number }) {
   );
 }
 
-export function HostsSection() {
-  // Prefer the daily snapshot: it is counted from the FULL catalog, while this
-  // page bundles only the capped subset. Without it the host figures would
-  // contradict the endpoint total shown above them.
-  const snap = latestSnapshot();
+export async function HostsSection() {
+  // The same per-request snapshot the hero uses. It is counted from the FULL
+  // catalog, while this page bundles only the capped subset — and it has to be
+  // the SAME read, or the host figures contradict the endpoint total shown
+  // directly above them whenever the build is older than the repository.
+  const snap = (await liveTotals()).snapshot;
   const fromSnapshot = Boolean(snap?.byHost?.length && snap?.hostCount);
 
   const local = hostStats();

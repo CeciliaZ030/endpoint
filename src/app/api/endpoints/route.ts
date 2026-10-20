@@ -7,7 +7,7 @@ export { OPTIONS };
 
 // GET /api/endpoints?category=&network=&protocol=&source=
 // Returns all catalog endpoints, optionally filtered (filters are AND-combined).
-export function GET(req: NextRequest) {
+export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
   const filters = {
     category: sp.get("category"),
@@ -22,7 +22,7 @@ export function GET(req: NextRequest) {
     filters: Object.fromEntries(
       Object.entries(filters).filter(([, v]) => v != null),
     ),
-    ...scopeMeta(),
+    ...(await scopeMeta()),
     endpoints,
   });
 }

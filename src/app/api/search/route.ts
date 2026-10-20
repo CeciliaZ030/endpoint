@@ -6,7 +6,7 @@ export { OPTIONS };
 
 // GET /api/search?q=...&category=&network=&protocol=&source=
 // Fuzzy search over name/description/url, composable with the same filters.
-export function GET(req: NextRequest) {
+export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
   const q = sp.get("q");
   if (!q || !q.trim()) return apiError("Missing required query parameter `q`");
@@ -22,7 +22,7 @@ export function GET(req: NextRequest) {
   return apiJson({
     query: q,
     count: endpoints.length,
-    ...scopeMeta(),
+    ...(await scopeMeta()),
     endpoints,
   });
 }
