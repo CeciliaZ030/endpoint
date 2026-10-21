@@ -18,6 +18,7 @@ Aggregated directories:
 | Source | Site | Fetcher |
 | --- | --- | --- |
 | x402 Inc. (self-curated) | https://x402jp.com | ✅ seed (`data/seed/x402-inc.json`) |
+| Community PR submissions | This repository | ✅ seed (`data/seed/community.json`) |
 | x402scan (Merit Systems) | https://x402scan.com | ✅ implemented |
 | Onyx Bazaar (CDP discovery) | https://onyx-actions.onrender.com/bazaar | ✅ implemented |
 | Pay.sh (Solana) | https://pay.sh | ✅ implemented (pay-skills catalog) |
@@ -368,6 +369,12 @@ x402 Inc. operates this catalog and **features its own endpoints**:
 
 No sign-up, submission form, or dynamic features. To add or correct an
 endpoint, open a pull request — everything is PR-based.
+
+For a service absent from the aggregated directories, edit
+`data/seed/community.json` rather than the generated catalog files. Include the
+public endpoint, accurate network and price, and a reproducible unpaid 402
+probe in the PR. A body-bound POST should be described as such; a submitted
+entry does not imply that this catalog has paid or verified the service.
 
 ## Deployment
 

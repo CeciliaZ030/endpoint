@@ -27,6 +27,7 @@ import { assessRun } from "./catalog-guard";
 import { appendAll } from "./append-all";
 
 import { fetchX402Inc } from "./fetchers/x402-inc";
+import { fetchCommunity } from "./fetchers/community";
 import { fetchX402scan, getLastX402scanRun } from "./fetchers/x402scan";
 import { fetchOnyxBazaar } from "./fetchers/onyx-bazaar";
 import { fetchAgenticMarket } from "./fetchers/agentic-market";
@@ -65,6 +66,7 @@ type NamedFetcher = {
 
 const FETCHERS: NamedFetcher[] = [
   { name: "x402-inc", run: fetchX402Inc, expectNonEmpty: true },
+  { name: "community", run: fetchCommunity, expectNonEmpty: false },
   {
     name: "x402scan",
     run: fetchX402scan,

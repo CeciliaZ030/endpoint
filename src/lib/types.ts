@@ -15,6 +15,7 @@ export type Category =
 
 export type DirectorySource =
   | "x402-inc"
+  | "community"
   | "x402scan"
   | "onyx-bazaar"
   | "agentic-market"
@@ -158,6 +159,7 @@ export const CATEGORIES: Category[] = [
 
 export const DIRECTORY_SOURCES: DirectorySource[] = [
   "x402-inc",
+  "community",
   "x402scan",
   "onyx-bazaar",
   "agentic-market",
@@ -176,6 +178,10 @@ export const DIRECTORY_META: Record<
   { label: string; home: string }
 > = {
   "x402-inc": { label: "x402 Inc.", home: "https://x402jp.com" },
+  community: {
+    label: "Community submissions",
+    home: "https://github.com/kato9292929/endpoint/pulls",
+  },
   x402scan: { label: "x402scan", home: "https://x402scan.com" },
   "onyx-bazaar": {
     label: "Onyx Bazaar",
