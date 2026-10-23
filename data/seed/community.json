@@ -1,15 +1,15 @@
 [
   {
-    "id": "aomi-task-api-arc-mainnet-staging",
-    "url": "https://api-staging.aomi.dev/v1/task/build",
-    "name": "Aomi Task API (Arc Mainnet staging)",
-    "description": "Prepare and simulate an unsigned Arc Mainnet execution bundle. A valid JSON POST quotes a $0.01 USDC x402 preparation purchase through Circle Gateway. Poll status for free, then purchase the frozen result separately at its quoted price. Staging service; no transaction is signed or broadcast.",
+    "id": "aomi-task-api-arc-mainnet",
+    "url": "https://api.aomi.dev/v1/task/build",
+    "name": "Aomi Task API (Arc Mainnet)",
+    "description": "Production Arc Mainnet service that prepares and simulates an unsigned execution bundle. A valid JSON POST quotes a 0.01 USDC body-bound x402 preparation purchase through Circle Gateway. Status polling is free; the frozen result requires a separate purchase priced at 3% of simulated gross outgoing USDC, and zero outflow is free. Aomi does not sign or execute the transaction.",
     "category": "other",
     "price": { "amount": 0.01, "currency": "USDC", "unit": "per-preparation" },
     "networks": ["Arc Mainnet"],
     "protocols": ["x402"],
     "source": ["community"],
-    "source_url": "https://api-staging.aomi.dev/.well-known/x402",
-    "last_seen": "2026-10-21T11:09:27.000Z"
+    "source_url": "https://api.aomi.dev/.well-known/x402",
+    "last_seen": "2026-10-23T02:09:24Z"
   }
 ]
