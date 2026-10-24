@@ -2,8 +2,8 @@
   {
     "id": "aomi-task-api-arc-mainnet",
     "url": "https://api.aomi.dev/v1/task/build",
-    "name": "Aomi Task API (Arc Mainnet)",
-    "description": "Production Arc Mainnet service that prepares and simulates an unsigned execution bundle. A valid JSON POST quotes a 0.01 USDC body-bound x402 preparation purchase through Circle Gateway. Status polling is free; the frozen result requires a separate purchase priced at 3% of simulated gross outgoing USDC, and zero outflow is free. Aomi does not sign or execute the transaction.",
+    "name": "Aomi Labs Task API (Arc Mainnet)",
+    "description": "Aomi Labs builds the execution harness for onchain finance. Its production Task API lets agents inspect a simulated onchain action before deciding whether to buy the exact unsigned transaction bundle. A valid JSON POST quotes 0.01 USDC for preparation over x402 through Circle Gateway on Arc Mainnet. Status and the signed preview are free. Retrieval is a separate purchase priced at 3% of simulated gross outgoing USDC (free for zero outflow). The buyer's wallet alone signs and broadcasts.",
     "category": "other",
     "price": { "amount": 0.01, "currency": "USDC", "unit": "per-preparation" },
     "networks": ["Arc Mainnet"],
